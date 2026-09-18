@@ -1,35 +1,3 @@
-#  This file is part of OctoBot (https://github.com/Drakkar-Software/OctoBot)
-#  Copyright (c) 2025 Drakkar-Software, All rights reserved.
-#
-#  OctoBot is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either
-#  version 3.0 of the License, or (at your option) any later version.
-#
-#  OctoBot is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with OctoBot. If not, see <https://www.gnu.org/licenses/>.
-"""
-Deep Agent channel, consumer, and producer for LangChain Deep Agents integration.
-
-Features:
-- SubAgentMiddleware for manager delegation
-- TodoListMiddleware for task planning
-- CompositeBackend for long-term memory
-- Dangling tool call repair
-- Streaming support
-- Debug logging for agent operations
-
-See LangChain Deep Agents docs:
-- https://docs.langchain.com/oss/python/deepagents/middleware
-- https://docs.langchain.com/oss/python/deepagents/long-term-memory
-- https://docs.langchain.com/oss/python/deepagents/harness
-"""
-
 import abc
 import typing
 import logging
@@ -89,18 +57,7 @@ class AbstractDeepAgentChannelConsumer(ai_agent_channels.AbstractAIAgentChannelC
 
 
 class AbstractDeepAgentChannelProducer(ai_agent_channels.AbstractAIAgentChannelProducer, abc.ABC):
-    """
-    Producer for Deep Agents with supervisor pattern and subagent orchestration.
-    
-    Features:
-    - SubAgentMiddleware for task delegation
-    - TodoListMiddleware for planning
-    - CompositeBackend with /memories/ for persistent storage
-    - Dangling tool call repair
-    - Streaming support
-    - Debug logging
-    """
-    
+
     AGENT_CHANNEL: typing.Optional[typing.Type[AbstractDeepAgentChannel]] = None
     AGENT_CONSUMER: typing.Optional[typing.Type[AbstractDeepAgentChannelConsumer]] = None
     
@@ -137,10 +94,6 @@ class AbstractDeepAgentChannelProducer(ai_agent_channels.AbstractAIAgentChannelP
         
         self.ai_service = ai_service
 
-        # An explicitly-provided store/checkpointer is an intentional caller
-        # override (e.g. tests, single-tenant usage) and is shared as-is.
-        # Otherwise each thread_id gets its own store so that concurrent
-        # invocations (different tenants/users) never share /memories/.
         self._explicit_store = store
         self._stores: dict[str, typing.Any] = {}
         self._checkpointer = checkpointer
@@ -161,34 +114,15 @@ class AbstractDeepAgentChannelProducer(ai_agent_channels.AbstractAIAgentChannelP
         return self._skills
     
     def get_agent_skills(self, agent_name: str) -> list[str] | None:
-        """
-        Get skills for a specific agent/subagent.
-        Override to provide agent-specific skills.
-        
-        Args:
-            agent_name: Name of the agent/subagent
-            
-        Returns:
-            List of skill paths (e.g., ["./technical-analysis/"]) or None
-        """
+
         return None
     
     def get_agent_skills_files(self, agent_name: str) -> dict[str, str] | None:
-        """
-        Get skill files for a specific agent/subagent.
-        Override to provide agent-specific skill files.
-        
-        Args:
-            agent_name: Name of the agent/subagent
-            
-        Returns:
-            Dict mapping virtual paths to file content or None
-        """
-        skills_dir = self.get_skills_resources_dir()  # pylint: disable=assignment-from-none
+
+        skills_dir = self.get_skills_resources_dir()  
         if not skills_dir:
             return None
-        
-        # Try to find agent-specific skills directory
+
         import os
         agent_skills_dir = os.path.join(skills_dir, agent_name)
         if os.path.isdir(agent_skills_dir):
@@ -197,35 +131,20 @@ class AbstractDeepAgentChannelProducer(ai_agent_channels.AbstractAIAgentChannelP
         return None
     
     def get_skills_resources_dir(self) -> str | None:
-        """
-        Get the tentacle's resources/skills directory path.
-        Override this to provide a custom skills directory.
-        By default, returns None (no auto-discovery).
-        
-        Example implementation in tentacle:
-            import os
-            return os.path.join(os.path.dirname(__file__), "resources", "skills")
-        """
+
         return None
     
     def get_interrupt_config(self) -> dict[str, typing.Any]:
         return self._interrupt_on
     
     def get_middleware(self) -> list[typing.Any]:
-        """
-        Get middleware list for this producer.
-        
-        Override to add custom middleware. Default includes:
-        - TodoListMiddleware (if ENABLE_WRITE_TODOS)
-        - SubAgentMiddleware with subagents
-        """
+
         middleware = []
         
         if not DEEP_AGENTS_AVAILABLE:
             return middleware
-        
-        # Build middleware with deduplication and merging
-        middleware_dict = {}  # Map middleware type to instance
+
+        middleware_dict = {}
         
         if self.ENABLE_WRITE_TODOS and TodoListMiddleware:
             middleware_type_name = TodoListMiddleware.__name__

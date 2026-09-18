@@ -1,18 +1,3 @@
-#  Drakkar-Software OctoBot-Trading
-#  Copyright (c) Drakkar-Software, All rights reserved.
-#
-#  This library is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Lesser General Public
-#  License as published by the Free Software Foundation; either
-#  version 3.0 of the License, or (at your option) any later version.
-#
-#  This library is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public
-#  License along with this library.
 import collections
 import typing
 
@@ -31,7 +16,6 @@ if typing.TYPE_CHECKING:
 
 
 class TradesManager(util.Initializable):
-    # memory usage for 100000 trades: approx 180 Mo
     MAX_TRADES_COUNT = constants.MAX_TRADES_COUNT
 
     def __init__(self, trader):
@@ -45,7 +29,6 @@ class TradesManager(util.Initializable):
         await self.reload_history(False)
         self.trades_initialized = True
         if self.trader.simulate:
-            # force init as there is no trade updater simulator
             for symbol in self.trader.exchange_manager.exchange_config.traded_symbol_pairs:
                 self._set_initialized_event(symbol)
 
@@ -63,7 +46,6 @@ class TradesManager(util.Initializable):
                 return self._add_trade_if_relevant(trade_id, created_trade)
             except Exception as err:
                 message = f"Unexpected error when parsing [{self.trader.exchange_manager.exchange_name}] trade"
-                # don't spam with errors, only log warnings
                 self.logger.warning(message)
                 self.logger.exception(err, False, message)
         return False
@@ -159,15 +141,12 @@ class TradesManager(util.Initializable):
         ]
 
     def initialize_from_exchange_data(self, exchange_data: "exchange_data_import.ExchangeData") -> None:
-        """
-        Initialize trades from exchange data by parsing trade dicts and adding them to this manager.
-        """
+
         for trade_dict in exchange_data.trades:
             trade = personal_data.create_trade_from_dict(self.trader, trade_dict)
             trade.trade_id = trade.trade_id or self.trader.generate_random_order_id()
             self.upsert_trade_instance(trade)
 
-    # private
     def _check_trades_size(self):
         if len(self.trades) > self.MAX_TRADES_COUNT:
             self._remove_oldest_trades(int(self.MAX_TRADES_COUNT / 10))
@@ -178,7 +157,6 @@ class TradesManager(util.Initializable):
 
     async def _load_trades_history(self, reset):
         if self.trader.exchange_manager.is_backtesting:
-            # don't load history on backtesting
             return
         try:
             if self.trader.exchange_manager.storage_manager.trades_storage:

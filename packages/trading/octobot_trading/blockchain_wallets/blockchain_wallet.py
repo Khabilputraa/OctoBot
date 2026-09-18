@@ -1,18 +1,3 @@
-#  Drakkar-Software OctoBot-Trading
-#  Copyright (c) Drakkar-Software, All rights reserved.
-#
-#  This library is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Lesser General Public
-#  License as published by the Free Software Foundation; either
-#  version 3.0 of the License, or (at your option) any later version.
-#
-#  This library is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public
-#  License along with this library.
 import decimal
 import asyncio
 import contextlib
@@ -28,11 +13,9 @@ import octobot_trading.accounts
 import octobot_trading.blockchain_wallets.adapter as blockchain_wallet_adapter
 
 class BlockchainWallet(octobot_trading.accounts.AbstractAccount):
-    """
-    Base class for all blockchain wallets, to be implemented by specific blockchain wallet subclasses.
-    """
+
     ADAPTER_CLASS = blockchain_wallet_adapter.BlockchainWalletAdapter
-    BLOCKCHAIN: str = None # type: ignore # ex: "ethereum" for Ethereum
+    BLOCKCHAIN: str = None
     IS_SIMULATED = False
 
     def __init__(self, parameters: blockchain_wallet_parameters.BlockchainWalletParameters):
@@ -46,7 +29,7 @@ class BlockchainWallet(octobot_trading.accounts.AbstractAccount):
 
     @contextlib.asynccontextmanager
     async def open(self) -> typing.AsyncGenerator["BlockchainWallet", None]:
-        # nothing to do by default, implement in subclass if necessary
+
         yield self
 
     async def get_balance(self, **kwargs: dict) -> dict[str, dict]:

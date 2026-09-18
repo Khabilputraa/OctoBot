@@ -1,18 +1,4 @@
-#  This file is part of OctoBot (https://github.com/Drakkar-Software/OctoBot)
-#  Copyright (c) 2025 Drakkar-Software, All rights reserved.
-#
-#  OctoBot is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either
-#  version 3.0 of the License, or (at your option) any later version.
-#
-#  OctoBot is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with OctoBot. If not, see <https://www.gnu.org/licenses/>.
+
 import pytest
 import decimal
 
@@ -20,25 +6,23 @@ import octobot_trading.enums
 import octobot_trading.errors as trading_errors
 from additional_tests.exchanges_tests import abstract_authenticated_exchange_tester
 
-# All test coroutines will be treated as marked.
 pytestmark = pytest.mark.asyncio
 
 
 class TestCoinbaseAuthenticatedExchange(
     abstract_authenticated_exchange_tester.AbstractAuthenticatedExchangeTester
 ):
-    # enter exchange name as a class variable here
     EXCHANGE_NAME = "coinbase"
     ORDER_CURRENCY = "ADA"
     SETTLEMENT_CURRENCY = "USDC"
     SYMBOL = f"{ORDER_CURRENCY}/{SETTLEMENT_CURRENCY}"
-    ORDER_SIZE = 70  # % of portfolio to include in test orders
+    ORDER_SIZE = 70  
     MIN_TRADE_USD_VALUE = decimal.Decimal("0.000003")
     CONVERTS_ORDER_SIZE_BEFORE_PUSHING_TO_EXCHANGES = True
     VALID_ORDER_ID = "8bb80a81-27f7-4415-aa50-911ea46d841c"
-    USE_ORDER_OPERATION_TO_CHECK_API_KEY_RIGHTS = True    # set True when api key rights can't be checked using a
+    USE_ORDER_OPERATION_TO_CHECK_API_KEY_RIGHTS = True
     EXPECT_MISSING_FEE_IN_CANCELLED_ORDERS = False
-    IS_AUTHENTICATED_REQUEST_CHECK_AVAILABLE = True    # set True when is_authenticated_request is implemented
+    IS_AUTHENTICATED_REQUEST_CHECK_AVAILABLE = True
     REQUIRES_CURRENCIES_FOR_TRANSACTIONS = True
     SLEEP_SECONDS_BEFORE_CHECKING_PORTFOLIO = 8
 

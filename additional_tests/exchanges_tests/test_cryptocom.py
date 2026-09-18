@@ -1,18 +1,4 @@
-#  This file is part of OctoBot (https://github.com/Drakkar-Software/OctoBot)
-#  Copyright (c) 2025 Drakkar-Software, All rights reserved.
-#
-#  OctoBot is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU General Public License
-#  as published by the Free Software Foundation; either
-#  version 3.0 of the License, or (at your option) any later version.
-#
-#  OctoBot is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with OctoBot. If not, see <https://www.gnu.org/licenses/>.
+
 import pytest
 
 from additional_tests.exchanges_tests import abstract_authenticated_exchange_tester
@@ -24,13 +10,12 @@ pytestmark = pytest.mark.asyncio
 class TestCryptoComAuthenticatedExchange(
     abstract_authenticated_exchange_tester.AbstractAuthenticatedExchangeTester
 ):
-    # enter exchange name as a class variable here
     EXCHANGE_NAME = "cryptocom"
     EXCHANGE_TENTACLE_NAME = "CryptoCom"
     ORDER_CURRENCY = "BTC"
     SETTLEMENT_CURRENCY = "USDT"
     SYMBOL = f"{ORDER_CURRENCY}/{SETTLEMENT_CURRENCY}"
-    ORDER_SIZE = 70  # % of portfolio to include in test orders
+    ORDER_SIZE = 70 
     VALID_ORDER_ID = "1777764898965454848"
 
     async def test_get_portfolio(self):
@@ -43,7 +28,6 @@ class TestCryptoComAuthenticatedExchange(
         await super().test_get_max_open_orders_count()
 
     async def test_get_account_id(self):
-        # pass if not implemented
         pass
 
     async def test_is_authenticated_request(self):
