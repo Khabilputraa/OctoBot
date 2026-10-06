@@ -57,16 +57,8 @@ const config: Config = {
     },
   },
 
-  // The embedded octobot-client demo (src/components/demo/) is styled with
-  // Tailwind v4, scoped under `.octobot-demo` (see src/css/demo.css) so it
-  // never touches Infima. Tailwind v4 has no standalone CLI/watcher step —
-  // it's a PostCSS plugin, so it's wired straight into Docusaurus's own
-  // PostCSS pipeline here rather than added as a separate build step.
   customFields: {
-    // Overridable default rendezvous server for the website-pairing demo
-    // section (src/components/demo/sections/WebsitePairingSim.tsx) — set
-    // these to point the docs build at a local/staging sync server instead
-    // of production.
+
     rendezvous: {
       baseUrl: process.env.DEMO_RENDEZVOUS_BASE_URL,
       namespace: process.env.DEMO_RENDEZVOUS_NAMESPACE,
