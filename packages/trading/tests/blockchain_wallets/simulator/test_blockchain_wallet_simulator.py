@@ -1,18 +1,3 @@
-#  Drakkar-Software OctoBot-Trading
-#  Copyright (c) Drakkar-Software, All rights reserved.
-#
-#  This library is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Lesser General Public
-#  License as published by the Free Software Foundation; either
-#  version 3.0 of the License, or (at your option) any later version.
-#
-#  This library is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  Lesser General Public License for more details.
-#
-#  You should have received a copy of the GNU Lesser General Public
-#  License along with this library.
 import decimal
 import mock
 import pytest
@@ -115,7 +100,6 @@ async def test_get_native_coin_balance(wallet_simulator):
 
 
 async def test_get_native_coin_balance_with_config(wallet_simulator):
-    # Configure some initial balance
     config = {
         blockchain_wallet_simulator.BlockchainWalletSimulatorConfigurationKeys.ASSETS.value: [
             {
@@ -176,8 +160,7 @@ async def test_get_custom_token_balance_with_config(wallet_descriptor, blockchai
         wallet_descriptor=wallet_descriptor
     )
     wallet = octobot_trading.blockchain_wallets.BlockchainWalletSimulator(parameters, trader)
-    
-    # Configure some initial balance
+
     config = {
         blockchain_wallet_simulator.BlockchainWalletSimulatorConfigurationKeys.ASSETS.value: [
             {
@@ -199,7 +182,7 @@ async def test_get_custom_token_balance_with_config(wallet_descriptor, blockchai
 
 async def test_get_balance_with_withdrawals(wallet_simulator, backtesting_trader):
     config, exchange_manager, trader = backtesting_trader
-    # Configure initial balance
+    
     wallet_config = {
         blockchain_wallet_simulator.BlockchainWalletSimulatorConfigurationKeys.ASSETS.value: [
             {
